@@ -1,0 +1,69 @@
+<html>
+
+<head>
+    <title>Pivot Console</title>
+    <script src="lib/jquery.min.js"></script>
+    <script src="lib/wsoc.js"></script>
+    <script src="lib/util.js"></script>
+    <link rel="stylesheet" type="text/css" href="res/rb.css" />
+    <style type="text/css">
+        #station {
+            width: 100%;
+            height: 40%;
+            background: white;
+            border: thin 1px;
+            float: left;
+            overflow-x: hidden;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        #profiler {
+            width: 70%;
+            height: 60%;
+            background: seashell;
+            border: none;
+            float: right;
+        }
+
+        #event {
+            width: 30%;
+            height: 60%;
+            background: lightgrey;
+            border: thin 1px;
+            float: left;
+            overflow-x: hidden;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        #frame {
+            overflow: hidden;
+        }
+    </style>
+
+    <script>
+        function hit(url) {
+            $("#profiler").get(0).contentWindow.postMessage(url);
+            $("#event").get(0).contentWindow.postMessage(url);
+        }
+        var notifier = notifier || {}
+        notifier.onmessage = function (msg) {
+            console.log(msg.data)
+        }
+        $(document).ready(function () {
+            (ws = new WSocket("localhost:6371", notifier)).keepAlive()
+            setInterval(function () { ws.post(JSON.stringify({ "flats": { "address": { "addr": "10.47.63.255" } }, "schema": "evt.probe.Scan" })) }, 6000)
+        });
+
+    </script>
+</head>
+
+<body id="frame">
+    <div id="station">
+    </div>
+    <iframe id="event" width="100%" height="60%" style="border:none" src=":event/v.htm"></iframe>
+    <iframe id="profiler" width="100%" height="60%" style="border:none" src=":profiler/v.htm"></iframe>
+</body>
+
+</html>

@@ -1,0 +1,62 @@
+<html>
+
+<head>
+    <script src="../lib/jquery.min.js"></script>
+    <script src="../lib/wsoc.js"></script>
+    <script src="../lib/util.js"></script>
+    <link rel="stylesheet" type="text/css" href="../res/rb.css"/>
+    <style type="text/css">
+        .panel,
+        .flip {
+            padding: 5px;
+            text-align: left;
+            background-color: whitesmoke;
+            border: solid 1px #c3c3c3;
+            overflow: scroll;
+        }
+
+        .flip:hover {
+            opacity: 0.6;
+            cursor: pointer;
+        }
+
+        .panel {
+            background-color: #e5eecc;
+            display: none;
+        }
+
+        #hit {
+            background: lightgrey;
+            border: thin 1px;
+            overflow-x: hidden;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+    </style>
+    <script>
+        var notifier = notifier || {}
+        notifier.onmessage = function (msg) {
+            var id = $("#hit").children().length
+            $("#hit").append(
+                "<div class='flip' id=" + id + ">" + msg.origin + "</div>" +
+                "<div class='panel'>" + "<pre>" + formatJson(msg.data) + "</pre>" + "</div>"
+            );
+            $("div#" + id).click(function () {
+                $(this).next().slideToggle("slow");
+            });
+        }
+        $(document).ready(function () {
+            addEventListener("message", function(event){
+                new WSocket(event.data+"/oi/event", notifier).keepAlive()
+            }, false)
+        })
+    </script>
+    <title></title>
+</head>
+
+<body>
+<div id="hit"></div>
+</body>
+
+</html>

@@ -1,0 +1,6 @@
+.gradle
+build
+*.egg-info
+:*
+.*
+*.iml

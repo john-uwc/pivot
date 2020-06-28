@@ -1,0 +1,42 @@
+buildscript {
+	repositories {
+        mavenCentral()
+        maven { url "https://jitpack.io" }
+	}
+    dependencies {
+        classpath "com.github.linkedin:pygradle:0.10.6"
+    }
+}
+
+apply plugin: 'com.linkedin.python-cli'
+
+repositories {
+    pyGradlePyPi()
+}
+
+dependencies {
+    python 'pypi:numpy:1.15.2'
+}
+
+python {
+    pinnedFile = project.file("pinned.txt")
+    testDir = project.file('test').path // project's tests directory.
+    srcDir = project.file('src').path // project's source directory.
+    setupCfg = project.path // project's setup.cfg file's path.
+
+    details {
+        virtualEnvPrompt = "(${project.name})"
+        activateLink = project.file(".ea")
+    }
+
+    pex {
+        pexCache = project.file("$buildDir/pex-cache") // default
+        fatPex = false // default
+    }
+
+    cli {
+        generateCompletions = false
+    }
+}
+
+project.version 0.1
